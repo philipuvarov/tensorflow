@@ -5,7 +5,7 @@ workspace(name = "org_tensorflow")
 # buildifier: disable=load-on-top
 
 # We must initialize hermetic python first.
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
 http_archive(
     name = "bazel_skylib",
@@ -101,3 +101,21 @@ tf_workspace1()
 load("@//tensorflow:workspace0.bzl", "tf_workspace0")
 
 tf_workspace0()
+
+### Ruff
+
+RUFF_VERSION = "0.3.5"
+
+# https://github.com/bazelbuild/bazel/issues/20269
+http_file(
+    name = "ruff-osx-tar",
+    sha256 = "75522512ed44a554968483e205f3c7260b7e05c90462a9edf69c8f0d737ddf1d",
+    urls = ["https://github.com/astral-sh/ruff/releases/download/v{0}/ruff-{0}-aarch64-apple-darwin.tar.gz".format(RUFF_VERSION)],
+)
+
+http_archive(
+    name = "ruff-linux",
+    build_file_content = 'exports_files(["ruff"])',
+    sha256 = "4326f4121b7fb2f4adbffcc6d07a595f5869a95b70793b70c16951715dc601de",
+    urls = ["https://github.com/astral-sh/ruff/releases/download/v{0}/ruff-{0}-x86_64-unknown-linux-gnu.tar.gz".format(RUFF_VERSION)],
+)
